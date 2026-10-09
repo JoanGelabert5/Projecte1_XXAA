@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notas · Práctica Docker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">PRÁCTICA 1 · DOCKER COMPOSE</p><h1>Un bloc, varios servicios.</h1>
+      <p>Guarda una nota y observa cómo colaboran la aplicación, la base de datos y la caché.</p>
+      <span class="tag">Entorno: {{ environment }}</span></header>
+    <section aria-labelledby="services-title">
+      <h2 id="services-title">Estado de las conexiones</h2>
+      <div class="services"><div><strong>PostgreSQL</strong><p id="database">Comprobando…</p></div>
+        <div><strong>Redis</strong><p id="cache">Comprobando…</p></div></div>
+      <p id="status-message" role="status">Consultando los servicios…</p>
+      <small>Comprobación automática cada 5 segundos. <a href="/status">Ver respuesta de /status</a></small>
+    </section>
+    <section aria-labelledby="new-title"><h2 id="new-title">Nueva nota</h2>
+      <form id="note-form"><label for="content">¿Qué quieres guardar?</label>
+        <textarea id="content" name="content" maxlength="500" required rows="3" placeholder="Mi primera nota persistente"></textarea>
+        <button type="submit">Guardar en PostgreSQL</button></form>
+      <p id="form-message" role="status"></p>
+    </section>
+    <section aria-labelledby="notes-title"><div class="section-heading"><h2 id="notes-title">Últimas 100 notas</h2>
+      <button id="refresh" class="secondary" type="button">Consultar notas</button></div>
+      <p id="source" role="status">Cargando…</p><ul id="notes"></ul>
+    </section>
+    <footer>PostgreSQL conserva los datos. Redis guarda una copia temporal de las consultas.</footer>
+  </main>
+</body>
+</html>
