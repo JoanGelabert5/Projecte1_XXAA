@@ -1,5 +1,6 @@
 import json
 import os
+import unicodedata
 
 import psycopg
 import redis
@@ -7,6 +8,17 @@ from flask import Flask, jsonify, render_template, request
 from psycopg.rows import dict_row
 from redis.backoff import NoBackoff
 from redis.retry import Retry
+
+
+def ascii_text(value):
+    """Convertir textos del JSON a ASCII sin modificar los datos guardados."""
+    if isinstance(value, str):
+        return unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    if isinstance(value, list):
+        return [ascii_text(item) for item in value]
+    if isinstance(value, dict):
+        return {key: ascii_text(item) for key, item in value.items()}
+    return value
 
 
 def create_app(test_config=None):
@@ -55,6 +67,8 @@ def create_app(test_config=None):
 
     @app.after_request
     def response_headers(response):
+        if response.is_json:
+            response.set_data(app.json.dumps(ascii_text(response.get_json())) + "\n")
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Content-Security-Policy"] = (
@@ -69,7 +83,7 @@ def create_app(test_config=None):
 
     @app.get("/status")
     def status():
-        # Nunca consultar este estado desde la caché: debe detectar fallos reales.
+        # Nunca consultar este estado desde la cache: debe detectar fallos reales.
         database = "disconnected"
         try:
             with connect_db() as connection:
@@ -132,7 +146,7 @@ def create_app(test_config=None):
                     "INSERT INTO notes (content) VALUES (%s) RETURNING id, content, created_at",
                     (content.strip(),),
                 ).fetchone()
-            # Salir del contexto confirma la transacción antes de invalidar la caché.
+            # Salir del contexto confirma la transaccion antes de invalidar la cache.
         except psycopg.Error:
             return jsonify(error="No se ha guardado la nota: PostgreSQL no responde."), 503
         warning = None
@@ -140,7 +154,7 @@ def create_app(test_config=None):
             try:
                 cache.delete("notes:list")
             except redis.RedisError:
-                warning = "Nota guardada. No se pudo invalidar la caché; expirará según su TTL."
+                warning = "Nota guardada. No se pudo invalidar la cache; expirara segun su TTL."
         return jsonify(
             note=dict(note, created_at=note["created_at"].isoformat()), warning=warning
         ), 201

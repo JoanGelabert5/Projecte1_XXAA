@@ -1,0 +1,7 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Comando: ./run.sh status prod
+
+NAME                     IMAGE                COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+practica1-prod-cache-1   redis:7.4-alpine     "docker-entrypoint.s…"   cache     29 seconds ago   Up 6 seconds (healthy)    6379/tcp
+practica1-prod-db-1      postgres:17-alpine   "docker-entrypoint.s…"   db        15 seconds ago   Up 14 seconds (healthy)   5432/tcp
+practica1-prod-web-1     practica1-prod-web   "gunicorn --bind 0.0…"   web       29 seconds ago   Up 23 seconds (healthy)   127.0.0.1:8000->5000/tcp

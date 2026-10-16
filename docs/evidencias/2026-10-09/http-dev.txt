@@ -1,0 +1,4 @@
+PASS: servicios saludables
+PASS: escritura y lectura en PostgreSQL
+PASS: desarrollo sin Redis
+Ejecutar sin otras consultas simultáneas y con TTL suficiente (30 s por defecto).

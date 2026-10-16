@@ -1,0 +1,24 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Comando: ./run.sh unit prod
+
+ Container practica1-prod-web-run-5a313f42acb3 Creating 
+ Container practica1-prod-web-run-5a313f42acb3 Created 
+test_ascii_output_for_database_and_existing_cache_preserves_originals (test_app.AppTests.test_ascii_output_for_database_and_existing_cache_preserves_originals) ... ok
+test_cache_failure_falls_back_to_database (test_app.AppTests.test_cache_failure_falls_back_to_database) ... ok
+test_cache_hit_avoids_database (test_app.AppTests.test_cache_hit_avoids_database) ... ok
+test_cache_miss_fills_cache_with_ttl (test_app.AppTests.test_cache_miss_fills_cache_with_ttl) ... ok
+test_database_failure_returns_503_without_cache (test_app.AppTests.test_database_failure_returns_503_without_cache) ... ok
+test_db_failure_and_recovery_are_rechecked (test_app.AppTests.test_db_failure_and_recovery_are_rechecked) ... ok
+test_dev_status_does_not_need_redis (test_app.AppTests.test_dev_status_does_not_need_redis) ... ok
+test_failed_cache_write_still_returns_notes (test_app.AppTests.test_failed_cache_write_still_returns_notes) ... ok
+test_failed_insert_does_not_invalidate_cache (test_app.AppTests.test_failed_insert_does_not_invalidate_cache) ... ok
+test_index_still_loads_when_services_fail (test_app.AppTests.test_index_still_loads_when_services_fail) ... ok
+test_insert_is_parameterized_and_invalidates_cache_after_commit (test_app.AppTests.test_insert_is_parameterized_and_invalidates_cache_after_commit) ... ok
+test_invalidation_failure_keeps_successful_insert (test_app.AppTests.test_invalidation_failure_keeps_successful_insert) ... ok
+test_redis_failure_marks_production_unhealthy (test_app.AppTests.test_redis_failure_marks_production_unhealthy) ... ok
+test_reject_invalid_content_before_connecting (test_app.AppTests.test_reject_invalid_content_before_connecting) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.077s
+
+OK

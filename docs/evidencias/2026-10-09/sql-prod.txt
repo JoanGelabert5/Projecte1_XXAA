@@ -1,0 +1,4 @@
+ current_user | current_database | connection_ok 
+--------------+------------------+---------------
+ notes_app    | notes            |             1
+(1 row)

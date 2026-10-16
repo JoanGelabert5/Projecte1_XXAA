@@ -1,0 +1,8 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Comando: ./run.sh db-test prod
+
+ current_user | current_database | connection_ok 
+--------------+------------------+---------------
+ notes_app    | notes            |             1
+(1 row)
+

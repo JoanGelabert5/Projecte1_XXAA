@@ -21,7 +21,7 @@ assert status["status"] == "healthy", status
 print("PASS: servicios saludables")
 text = f"Prueba automática {time.time_ns()}"
 code, created = request("/api/notes", {"content": text})
-assert code == 201 and created["note"]["content"] == text, created
+assert code == 201 and created["note"]["content"] == text.replace("automática", "automatica"), created
 _, first = request("/api/notes")
 assert any(note["id"] == created["note"]["id"] for note in first["notes"]), first
 assert first["source"] == "postgresql", first

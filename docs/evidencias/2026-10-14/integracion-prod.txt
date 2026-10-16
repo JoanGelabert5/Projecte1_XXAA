@@ -1,0 +1,32 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Comando: ./run.sh verify prod
+
+PASS: configuración de redes, puertos y healthchecks
+ Container practica1-prod-db-1 Stopping 
+ Container practica1-prod-db-1 Stopped 
+PASS: caída real de PostgreSQL detectada
+Going to remove practica1-prod-db-1
+ Container practica1-prod-db-1 Removing 
+ Container practica1-prod-db-1 Removed 
+ Container practica1-prod-db-1 Creating 
+ Container practica1-prod-db-1 Created 
+ Container practica1-prod-db-1 Starting 
+ Container practica1-prod-db-1 Started 
+ Container practica1-prod-db-1 Waiting 
+ Container practica1-prod-db-1 Healthy 
+PASS: nota conservada tras eliminar y recrear el contenedor db
+PASS: lectura PostgreSQL seguida de lectura Redis
+ Container practica1-prod-cache-1 Stopping 
+ Container practica1-prod-cache-1 Stopped 
+PASS: caída Redis detectada; consulta alternativa en PostgreSQL
+ Container practica1-prod-cache-1 Starting 
+ Container practica1-prod-cache-1 Started 
+ Container practica1-prod-cache-1 Waiting 
+ Container practica1-prod-cache-1 Healthy 
+ Container practica1-prod-db-1 Running 
+ Container practica1-prod-cache-1 Running 
+ Container practica1-prod-db-1 Waiting 
+ Container practica1-prod-cache-1 Waiting 
+ Container practica1-prod-cache-1 Healthy 
+ Container practica1-prod-db-1 Healthy 
+PASS: integración prod terminada; nota de persistencia #18

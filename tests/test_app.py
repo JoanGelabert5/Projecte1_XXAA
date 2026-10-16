@@ -62,6 +62,24 @@ class AppTests(unittest.TestCase):
         self.assertEqual(response.json["cache"], "miss")
         self.assertEqual(self.cache.setex.call_args.args[:2], ("notes:list", 30))
 
+    def test_ascii_output_for_database_and_existing_cache_preserves_originals(self):
+        original = "Caché, producción, mañana, il·lusió 😀"
+        expected = "Cache, produccion, manana, illusio "
+        self.note["content"] = original
+        client = self.client(True)
+        response = client.get("/api/notes")
+        self.assertEqual(response.json["notes"][0]["content"], expected)
+        cached = self.cache.setex.call_args.args[2]
+        self.assertEqual(json.loads(cached)[0]["content"], original)
+        self.cache.get.return_value = cached
+        response = client.get("/api/notes")
+        self.assertEqual(response.json["cache"], "hit")
+        self.assertEqual(response.json["notes"][0]["content"], expected)
+        self.assertNotIn(b"\\u", response.data)
+        response = client.post("/api/notes", json={"content": original})
+        self.assertEqual(response.json["note"]["content"], expected)
+        self.assertEqual(self.connection.execute.call_args.args[1], (original,))
+
     def test_cache_failure_falls_back_to_database(self):
         self.cache.get.side_effect = redis.ConnectionError()
         response = self.client(True).get("/api/notes")

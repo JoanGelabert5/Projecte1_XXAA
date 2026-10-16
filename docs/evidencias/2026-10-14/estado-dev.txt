@@ -1,0 +1,6 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Comando: ./run.sh status dev
+
+NAME                  IMAGE                COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+practica1-dev-db-1    postgres:17-alpine   "docker-entrypoint.s…"   db        36 seconds ago   Up 36 seconds (healthy)   5432/tcp
+practica1-dev-web-1   practica1-dev-web    "flask --app app:cre…"   web       51 seconds ago   Up 44 seconds (healthy)   127.0.0.1:5000->5000/tcp

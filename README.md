@@ -2,11 +2,11 @@
 
 Servicio web desplegable en desarrollo (Flask y PostgreSQL) y producción (Flask con Gunicorn, PostgreSQL y Redis). Permite crear notas, consultar su origen y observar las conexiones.
 
-**Estado:** ambos entornos construidos y arrancados, con los cinco contenedores saludables. Superadas 13 pruebas unitarias dentro de Docker y las pruebas reales de persistencia, caché, caídas, recuperación y aislamiento. Véase [resultados y evidencias](docs/resultados.md) y el [recorrido explicado](docs/recorrido-explicado.md).
+**Verificación:** las ejecuciones y sus fechas se documentan por separado para distinguir las pruebas actuales de las evidencias históricas. Véase [resultados y evidencias](docs/resultados.md) y el [recorrido explicado](docs/recorrido-explicado.md).
 
 ## 1. Instalación y ejecución
 
-Requisitos: Docker Engine en ejecución, Docker Compose v2 o posterior, Bash y Python 3 para los scripts auxiliares. Acceso a Internet durante la construcción. Puertos 5000 (dev) y 8000 (prod) libres, o modificados en los archivos `.env`. `make` es opcional.
+Requisitos: Docker Engine en ejecución, Docker Compose v2 o posterior, Bash y Python 3 para los scripts auxiliares. Acceso a Internet durante la construcción. Puertos 5000 (dev) y 8000 (prod) libres, o modificados en los archivos `.env`. `make` es opcional. Las consultas HTTP de los ejemplos usan `curl`; el seguimiento continuo de Redis requiere `watch`.
 
 Desde la raíz del proyecto:
 
@@ -92,9 +92,9 @@ flowchart TB
     class voldev,volprod storage;
 ```
 
-[Diagrama explicado y versión editable](docs/arquitectura.md).
+El código Mermaid de este bloque es la definición editable del diagrama. Hay cinco contenedores (dos en dev y tres en prod) y cuatro redes (frontend y backend independientes para cada entorno).
 
-La web pertenece a ambas redes. PostgreSQL y Redis solo pertenecen a `backend`, marcada `internal: true`, y no publican puertos. `frontend` permite el acceso al puerto publicado de la web. Docker resuelve los nombres `db` y `cache` dentro de sus redes.
+La web pertenece a ambas redes. PostgreSQL y Redis solo pertenecen a `backend`, marcada `internal: true`, y no publican puertos. El acceso desde el anfitrión se habilita mediante los puertos publicados de la web; el nombre `frontend` por sí solo no publica servicios. Docker resuelve los nombres `db` y `cache` dentro de sus redes.
 
 La publicación usa `127.0.0.1` por defecto para acceso local. `BIND_IP=0.0.0.0` permitiría acceso desde otros equipos si lo permiten la red y el cortafuegos. Solo se publica la web.
 
@@ -134,6 +134,10 @@ La publicación usa `127.0.0.1` por defecto para acceso local. `BIND_IP=0.0.0.0`
 | `GET /api/notes` | Hasta 100 notas recientes, origen y estado de caché |
 | `POST /api/notes` | JSON `{"content":"texto"}`; 201 al guardar, 400 si es inválido o 503 si falla PostgreSQL |
 
+Las rutas `/api/notes` y `/status` forman la API propia que consume el JavaScript del navegador; no son carpetas ni APIs externas.
+
+Antes de enviar una respuesta JSON, `ascii_text()` normaliza los textos a ASCII: `Caché` pasa a `Cache` y `mañana` a `manana`. Los símbolos sin representación ASCII se omiten. Esto también afecta a lo que muestra el navegador; PostgreSQL y Redis conservan los textos originales. Es una transformación de presentación con pérdida de caracteres, no una medida de seguridad.
+
 La tabla `notes` contiene identificador, contenido de 1 a 500 caracteres y fecha. Cada operación abre y cierra su conexión SQL. El contexto `with` confirma la transacción si termina correctamente y la revierte ante una excepción.
 
 La inserción usa parámetros (`VALUES (%s)` y una tupla independiente). El texto no se concatena al SQL. El navegador lo muestra con `textContent`, sin interpretarlo como HTML.
@@ -151,6 +155,16 @@ La imagen oficial de PostgreSQL ejecuta `db/init.sh` cuando el volumen está vac
 Para observarlo, crear una nota y consultar dos veces antes del TTL. La lectura automática tras guardar puede ser la primera: observar su origen. Ejecutar los scripts de prueba sin otras consultas simultáneas.
 
 Redis conserva copias desechables, sin persistencia. PostgreSQL es la fuente de datos. Si PostgreSQL cae y Redis aún tiene una copia, la lista puede mostrarse, pero `/status` indicará el fallo porque realiza comprobaciones independientes.
+
+Para observar los aciertos y fallos registrados por el propio Redis, con producción arrancada:
+
+```bash
+./run.sh cache-stats
+```
+
+Actualiza `keyspace_hits` y `keyspace_misses` cada segundo; salir con `Ctrl+C`. Para una sola consulta, usar `./run.sh cache-stats --once`. Requiere `watch` para el seguimiento continuo. Son contadores acumulados de toda la instancia de Redis: cerrar la página web y evitar otras consultas durante la demostración. Desde otra terminal, ejecutar dos veces seguidas `curl -s http://localhost:8000/api/notes`; la segunda debería registrar un acierto antes de que caduque la copia. La medición procede de Redis, independientemente de los campos del JSON que devuelve Flask.
+
+`Cache-Control: no-store` impide almacenar la respuesta en cachés HTTP del navegador o de intermediarios. No desactiva Redis: es una caché interna del servidor. Los campos `cache` y `source` los genera Flask; los contadores de `INFO stats` los mantiene Redis. Este proyecto no implementa caché HTTP reutilizable.
 
 **Límite conocido:** la invalidación sencilla no garantiza consistencia estricta entre peticiones concurrentes. Una lectura iniciada antes de una escritura puede guardar después una copia anterior; el TTL limita su duración. Si falla la invalidación, la nota permanece guardada y la API devuelve un aviso. Esta demostración utiliza consistencia eventual.
 
@@ -206,6 +220,8 @@ Quien administra Docker puede inspeccionar variables. No publicar salidas comple
 | `./run.sh test prod` | `make test ENV=prod` | Pruebas HTTP básicas |
 | `./run.sh verify prod` | `make verify ENV=prod` | Persistencia y caídas reales |
 | `./run.sh unit dev` | `make unit` | Pruebas unitarias en una imagen ya construida |
+| `./run.sh cache-stats` | — | Contadores de Redis cada segundo; `--once` para una consulta |
+| `./run.sh db-test prod` | — | Consulta SQL con el usuario de la aplicación |
 | `./run.sh package` | `make package` | ZIP sin secretos |
 
 `down` conserva los volúmenes. **No usar `down -v` para probar persistencia**: elimina los volúmenes y sus datos.
@@ -258,13 +274,13 @@ Simulan PostgreSQL y Redis; no acreditan redes ni persistencia reales de Docker.
 
 ## 9. Entrega y declaración de IA
 
-El enunciado pide repositorio público, ZIP para el campus y README con ejecución, arquitectura y pruebas. Las verificaciones locales están completadas. Quedan pendientes la revisión del alumno, la publicación de los cambios en GitHub y la subida al campus.
+La entrega local incluye código, configuración de ejemplo, instrucciones y evidencias. El ZIP se genera con el comando siguiente. La publicación en GitHub y la subida al campus son pasos externos que debe realizar el alumno; generar el ZIP no acredita esas acciones.
 
 `./run.sh package` genera `dist/practica1.zip` con código, plantillas y documentación. Al descomprimir, `./run.sh init` genera nuevas credenciales. Revisar `git status` antes de publicar: los `.env` privados no deben aparecer.
 
 Declaración de IA:
 
-- Herramienta: OpenAI Codex. Versión/modelo exactos: pendientes de registrar a partir de la interfaz de la sesión.
+- Herramienta: OpenAI Codex (aplicación de escritorio), asistente basado en GPT-6 según la identificación disponible en la sesión. No se dispone del número de compilación de la aplicación.
 - Finalidad: interpretar requisitos, explicar conceptos, preparar implementación y pruebas.
 - Partes asistidas: Flask, Dockerfile, Compose, scripts, pruebas unitarias, guía y README.
 - Validación: pruebas unitarias y pruebas reales de Docker descritas en `docs/resultados.md`, con capturas y salidas de comandos. El alumno debe comprender el código y poder reproducir las comprobaciones para su defensa.
@@ -279,4 +295,4 @@ Declaración de IA:
 - [Psycopg: transacciones y parámetros](https://www.psycopg.org/psycopg3/docs/basic/usage.html).
 - [Redis: cliente Python](https://redis.io/docs/latest/develop/clients/redis-py/).
 
-El [guion de trabajo](docs/guia-practica.md) recoge los conceptos para explicar la práctica.
+El [recorrido explicado](docs/recorrido-explicado.md) reúne los conceptos y el guion de demostración. Los [resultados](docs/resultados.md) enlazan las evidencias con su fecha.

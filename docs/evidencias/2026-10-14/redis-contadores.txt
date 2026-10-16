@@ -1,0 +1,27 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Consulta: ./run.sh cache-stats --once (redis-cli INFO stats)
+Dos GET http://localhost:8000/api/notes consecutivos.
+{
+  "antes": {
+    "keyspace_hits": 0,
+    "keyspace_misses": 0
+  },
+  "peticiones": [
+    {
+      "http": 200,
+      "source": "postgresql",
+      "cache": "miss"
+    },
+    {
+      "http": 200,
+      "source": "redis",
+      "cache": "hit"
+    }
+  ],
+  "despues": {
+    "keyspace_hits": 1,
+    "keyspace_misses": 1
+  }
+}
+PASS: aumento de hits registrado por Redis; textos JSON ASCII.
+Los contadores son globales: otras consultas concurrentes pueden contribuir.

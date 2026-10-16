@@ -1,0 +1,82 @@
+Fecha: 2026-10-14 (Europe/Madrid)
+Comando: ./run.sh up-prod
+
+ Image practica1-prod-web Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 526B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 487B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/python:3.13-slim
+#3 DONE 0.2s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 124B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 279B done
+#5 DONE 0.0s
+
+#6 [1/5] FROM docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
+#6 resolve docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f done
+#6 DONE 0.0s
+
+#7 [2/5] WORKDIR /app
+#7 CACHED
+
+#8 [3/5] COPY requirements.txt .
+#8 CACHED
+
+#9 [4/5] RUN pip install --no-cache-dir -r requirements.txt     && groupadd --gid 10001 web     && useradd --uid 10001 --gid web --no-create-home web
+#9 CACHED
+
+#10 [5/5] COPY app/ ./app/
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 exporting manifest sha256:fa941ffa12b13371a94e088e00efb2921ca3d4a74ef642e5501929879c4327a0 done
+#11 exporting config sha256:66a79f6baf5f330a565175e8df5bcf093cff884ede3e06b42029687ef11b7da3 done
+#11 exporting attestation manifest sha256:c7bde46a4db5739ae59014804e6d23d7a698f25acb704367071605dd79181b1e done
+#11 exporting manifest list sha256:9ee4d972b785ef3b4ccde8c9fc22cb9fcd710800f95920e99b8e048e3e6d1f58 done
+#11 naming to docker.io/library/practica1-prod-web:latest done
+#11 unpacking to docker.io/library/practica1-prod-web:latest done
+#11 DONE 0.0s
+
+#12 resolving provenance for metadata file
+#12 DONE 0.0s
+ Image practica1-prod-web Built 
+ Network practica1-prod_frontend Creating 
+ Network practica1-prod_backend Creating 
+ Network practica1-prod_backend Creating 
+ Network practica1-prod_frontend Creating 
+ Network practica1-prod_backend Created 
+ Network practica1-prod_backend Created 
+ Container practica1-prod-cache-1 Creating 
+ Container practica1-prod-db-1 Creating 
+ Network practica1-prod_frontend Created 
+ Network practica1-prod_frontend Created 
+ Container practica1-prod-cache-1 Created 
+ Container practica1-prod-db-1 Created 
+ Container practica1-prod-web-1 Creating 
+ Container practica1-prod-web-1 Created 
+ Container practica1-prod-cache-1 Starting 
+ Container practica1-prod-db-1 Starting 
+ Container practica1-prod-cache-1 Started 
+ Container practica1-prod-db-1 Started 
+ Container practica1-prod-cache-1 Waiting 
+ Container practica1-prod-db-1 Waiting 
+ Container practica1-prod-cache-1 Healthy 
+ Container practica1-prod-db-1 Healthy 
+ Container practica1-prod-web-1 Starting 
+ Container practica1-prod-web-1 Started 
+ Container practica1-prod-cache-1 Waiting 
+ Container practica1-prod-web-1 Waiting 
+ Container practica1-prod-db-1 Waiting 
+ Container practica1-prod-db-1 Healthy 
+ Container practica1-prod-cache-1 Healthy 
+ Container practica1-prod-web-1 Healthy 

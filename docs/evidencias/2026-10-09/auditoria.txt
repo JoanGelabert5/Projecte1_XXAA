@@ -1,0 +1,29 @@
+Docker Engine: 29.8.2
+HTTP anfitrión dev: 200 {"environment": "dev", "services": {"cache": "not_configured", "database": "connected"}, "status": "healthy"}
+practica1-dev-web-1: puertos publicados = {"5000/tcp": [{"HostIp": "127.0.0.1", "HostPort": "5000"}]}
+practica1-dev-db-1: puertos publicados = {}
+Red backend dev: internal=true
+Volumen PostgreSQL dev: practica1-dev_db_data
+UID web dev: 10001
+Rol dev (usuario|superusuario|SELECT|INSERT|DELETE): notes_app|f|t|t|f
+Python dev: Python 3.13.16
+PostgreSQL dev: postgres (PostgreSQL) 17.11
+HTTP anfitrión prod: 200 {"environment": "prod", "services": {"cache": "connected", "database": "connected"}, "status": "healthy"}
+practica1-prod-web-1: puertos publicados = {"5000/tcp": [{"HostIp": "127.0.0.1", "HostPort": "8000"}]}
+practica1-prod-db-1: puertos publicados = {}
+practica1-prod-cache-1: puertos publicados = {}
+Red backend prod: internal=true
+Volumen PostgreSQL prod: practica1-prod_db_data
+UID web prod: 10001
+Rol prod (usuario|superusuario|SELECT|INSERT|DELETE): notes_app|f|t|t|f
+Python prod: Python 3.13.16
+PostgreSQL prod: postgres (PostgreSQL) 17.11
+PASS: volúmenes distintos y notas creadas desde cada interfaz no se mezclan
+Redis: Redis server v=7.4.11 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=40ff01a501d8e4b6
+NAME                  IMAGE                COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+practica1-dev-db-1    postgres:17-alpine   "docker-entrypoint.s…"   db        11 minutes ago   Up 11 minutes (healthy)   5432/tcp
+practica1-dev-web-1   practica1-dev-web    "flask --app app:cre…"   web       12 minutes ago   Up 12 minutes (healthy)   127.0.0.1:5000->5000/tcp
+NAME                     IMAGE                COMMAND                  SERVICE   CREATED          STATUS                        PORTS
+practica1-prod-cache-1   redis:7.4-alpine     "docker-entrypoint.s…"   cache     10 minutes ago   Up 9 minutes (healthy)        6379/tcp
+practica1-prod-db-1      postgres:17-alpine   "docker-entrypoint.s…"   db        10 minutes ago   Up About a minute (healthy)   5432/tcp
+practica1-prod-web-1     practica1-prod-web   "gunicorn --bind 0.0…"   web       10 minutes ago   Up 10 minutes (healthy)       127.0.0.1:8000->5000/tcp

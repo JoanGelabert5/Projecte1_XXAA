@@ -12,6 +12,7 @@ Uso: ./run.sh COMANDO [dev|prod]
   status [dev|prod]      Ver contenedores y salud
   logs [dev|prod]        Ver los últimos logs
   db-test [dev|prod]     Comprobar conexión SQL como usuario de la aplicación
+  cache-stats [--once]   Ver HIT/MISS de Redis en prod cada segundo; Ctrl+C para salir
   test [dev|prod]        Pruebas HTTP reales (crean una nota de prueba)
   verify [dev|prod]      Persistencia y caídas reales; recrea db conservando sus datos
   unit [dev|prod]        Pruebas unitarias dentro de la imagen web
@@ -40,6 +41,22 @@ case "$action" in
   down) compose "${2:-dev}" down --remove-orphans ;;
   status) compose "${2:-dev}" ps -a ;;
   logs) compose "${2:-dev}" logs --tail 100 ;;
+  cache-stats)
+    case "${2:-}" in
+      --once)
+        compose prod exec -T cache redis-cli INFO stats \
+          | grep -E '^keyspace_(hits|misses):'
+        ;;
+      "")
+        command -v watch >/dev/null || {
+          echo 'Falta watch. Puedes consultar una vez con ./run.sh cache-stats --once' >&2
+          exit 1
+        }
+        exec watch -e -n 1 -x ./run.sh cache-stats --once
+        ;;
+      *) echo 'Uso: ./run.sh cache-stats [--once] (Redis solo existe en prod)' >&2; exit 2 ;;
+    esac
+    ;;
   db-test)
     compose "${2:-dev}" exec -T db sh -c \
       'PGPASSWORD="$DB_PASSWORD" psql -h 127.0.0.1 -U "$DB_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -c "SELECT current_user, current_database(), 1 AS connection_ok;"'
