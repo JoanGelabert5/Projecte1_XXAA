@@ -21,9 +21,7 @@ Les execucions anteriors i les seves dates es documenten a [resultats i evidènc
 
 ## Guió de presentació, des d'un desplegament buit
 
-Durada orientativa: 20–25 minuts, més el temps de construcció i proves. Executa els blocs un a un i explica el resultat abans de continuar. Per mostrar l'aplicació a un usuari, obre breument les dues pàgines; després tanca-les abans de les proves de caché. També tens alternatives amb `curl` per fer la demostració només des del terminal.
-
-La neteja del pas 1 és **opcional i destructiva per a les notes**. Per conservar-les, omet aquest pas i executa `./run.sh init` abans de validar la configuració.
+Durada orientativa: 10–15 minuts.
 
 ### 0. Presentar l'objectiu i comprovar Docker
 
