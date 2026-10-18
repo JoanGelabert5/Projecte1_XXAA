@@ -17,24 +17,6 @@ Les execucions anteriors i les seves dates es documenten a [resultats i evidènc
 - [Ordres de consulta i diagnòstic](#ordres): automatització i resolució de problemes.
 - [Evidències i entrega](#entrega): resultats, ZIP i declaració d'IA.
 
-<a id="preparacio"></a>
-
-## Preparació i arrencada habitual
-
-Cal Docker Engine en execució, Docker Compose v2 o posterior, Bash i Python 3 per als scripts auxiliars. La construcció necessita accés a les imatges i dependències d'Internet. Les demostracions HTTP utilitzen `curl`; `watch` només és necessari per veure els comptadors de Redis contínuament.
-
-Des de la carpeta del projecte:
-
-```bash
-./run.sh init
-./run.sh up-dev
-./run.sh up-prod
-```
-
-Obre <http://localhost:5000> per a desenvolupament i <http://localhost:8000> per a producció. Aquests són els ports per defecte; han d'estar lliures o s'han de canviar als `.env`. Aquesta arrencada conserva els volums i les notes existents.
-
-`init` genera `.env.dev` i `.env.prod` amb contrasenyes aleatòries diferents i permisos `600`; no sobreescriu fitxers existents. Les plantilles `.example` contenen marcadors, no credencials operatives. L'aplicació i les dependències s'instal·len dins de Docker.
-
 <a id="presentacio"></a>
 
 ## Guió de presentació, des d'un desplegament buit
@@ -45,7 +27,7 @@ La neteja del pas 1 és **opcional i destructiva per a les notes**. Per conserva
 
 ### 0. Presentar l'objectiu i comprovar Docker
 
-**Què dir:** «Presentaré una aplicació de notes amb dos entorns separats. Desenvolupament utilitza Flask i PostgreSQL; producció utilitza Gunicorn, PostgreSQL i Redis. Començaré eliminant el desplegament anterior perquè es vegi tot el procés.»
+Aquest directori conté una aplicació de notes amb dos entorns separats. Desenvolupament utilitza Flask i PostgreSQL; producció utilitza Gunicorn, PostgreSQL i Redis. Eliminam el desplegament anterior.
 
 ```bash
 cd ~/Escritorio/Projecte1_XXAA
