@@ -520,3 +520,4 @@ Declaració d'IA:
 - [Psycopg: transaccions i paràmetres](https://www.psycopg.org/psycopg3/docs/basic/usage.html).
 - [Redis: client Python](https://redis.io/docs/latest/develop/clients/redis-py/).
 - [Redis: Redis CLI](https://redis.io/docs/latest/commands/info/)
+- [Redis: Redis PING](https://redis.io/docs/latest/commands/ping/)

@@ -57,7 +57,7 @@ La auditoría registró solo puertos web publicados, redes backend internas, vol
 
 Una captura fija muestra el estado visible en ese momento; por sí sola no demuestra el paso del tiempo ni la actualización automática. Los registros de integración complementan estas capturas.
 
-## Reproducción
+## Cómo repetir las pruebas
 
 Desde la raíz del proyecto, con Docker disponible y sin otras consultas concurrentes:
 
@@ -75,4 +75,4 @@ Desde la raíz del proyecto, con Docker disponible y sin otras consultas concurr
 ./run.sh status prod
 ```
 
-El procedimiento de presentación y la eliminación opcional de datos se explican en el [recorrido](recorrido-explicado.md). Los registros de esta carpeta no acreditan publicación en GitHub ni entrega en el campus.
+El procedimiento de presentación y la eliminación opcional de datos se explican en el [guion de presentación del README](../README.md#presentacio). Los registros de esta carpeta no acreditan publicación en GitHub ni entrega en el campus.
